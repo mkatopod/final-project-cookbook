@@ -7,11 +7,12 @@ import bcrypt from "bcrypt";
 const prisma = new PrismaClient();
 
 async function main() {
-    console.log("Starting database seed...");
+    console.log("Starting the database seed...");
 
-    //USERS - Create two users: one ADMIN, one regular USER
+    //Create two users: one ADMIN and one regular USER
     console.log("\nCreating users...");
 
+    //These are the passwords and user/admin info needed!!
     const adminPassword = await bcrypt.hash("admin123", 10);
     const regularPassword = await bcrypt.hash("user123", 10);
 
@@ -33,7 +34,7 @@ async function main() {
     });
     console.log(`Regular user created: ${regularUser.email}`);
 
-    //INGREDIENTS - Sample ingredients across categories
+    //Create ingredients across categories
     console.log("\nCreating ingredients...");
 
     const ingredients = await Promise.all([
@@ -54,7 +55,7 @@ async function main() {
     ]);
     console.log(`${ingredients.length} ingredients created`);
 
-    //RECIPES - Sample recipes owned by different users
+    //Create recipes owned by different users
     console.log("\nCreating recipes...");
 
     //Regular user's recipes
@@ -97,7 +98,7 @@ async function main() {
         },
     });
 
-    //Admin user's recipes
+    //Admin's recipes
     const recipe4 = await prisma.recipe.create({
         data: {
             title: "Pasta Carbonara",
@@ -128,61 +129,66 @@ async function main() {
 
     console.log(`5 recipes created`);
 
-    //RECIPE INGREDIENTS - Link recipes with ingredients
+    //This links recipes with ingredients
     console.log("\nLinking recipes with ingredients...");
 
     await prisma.recipeIngredient.createMany({
         data: [
             //Pancakes ingredients
-            { recipeId: recipe1.id, ingredientId: ingredients[0].id, category_type: "dry" }, // Flour
-            { recipeId: recipe1.id, ingredientId: ingredients[1].id, category_type: "dry" }, // Sugar
-            { recipeId: recipe1.id, ingredientId: ingredients[2].id, category_type: "dry" }, // Baking Powder
-            { recipeId: recipe1.id, ingredientId: ingredients[4].id, category_type: "wet" }, // Eggs
-            { recipeId: recipe1.id, ingredientId: ingredients[5].id, category_type: "wet" }, // Milk
+            //Flour, Sugar, Baking Powder, Eggs, Milk
+            { recipeId: recipe1.id, ingredientId: ingredients[0].id, category_type: "dry" }, 
+            { recipeId: recipe1.id, ingredientId: ingredients[1].id, category_type: "dry" }, 
+            { recipeId: recipe1.id, ingredientId: ingredients[2].id, category_type: "dry" }, 
+            { recipeId: recipe1.id, ingredientId: ingredients[4].id, category_type: "dairy" }, 
+            { recipeId: recipe1.id, ingredientId: ingredients[5].id, category_type: "dairy" }, 
 
-            //Chocolate Cake ingredients
-            { recipeId: recipe2.id, ingredientId: ingredients[0].id, category_type: "dry" }, // Flour
-            { recipeId: recipe2.id, ingredientId: ingredients[1].id, category_type: "dry" }, // Sugar
-            { recipeId: recipe2.id, ingredientId: ingredients[4].id, category_type: "wet" }, // Eggs
-            { recipeId: recipe2.id, ingredientId: ingredients[5].id, category_type: "wet" }, // Milk
-            { recipeId: recipe2.id, ingredientId: ingredients[3].id, category_type: "flavoring" }, // Vanilla
+            //Cake ingredients
+            //Flour, Sugar, Eggs, Milk, Vanilla
+            { recipeId: recipe2.id, ingredientId: ingredients[0].id, category_type: "dry" }, 
+            { recipeId: recipe2.id, ingredientId: ingredients[1].id, category_type: "dry" }, 
+            { recipeId: recipe2.id, ingredientId: ingredients[4].id, category_type: "dairy" }, 
+            { recipeId: recipe2.id, ingredientId: ingredients[5].id, category_type: "dairy" }, 
+            { recipeId: recipe2.id, ingredientId: ingredients[3].id, category_type: "flavoring" }, 
 
-            //Vegetable Omelette ingredients
-            { recipeId: recipe3.id, ingredientId: ingredients[4].id, category_type: "wet" }, // Eggs
-            { recipeId: recipe3.id, ingredientId: ingredients[6].id, category_type: "wet" }, // Butter
-            { recipeId: recipe3.id, ingredientId: ingredients[9].id, category_type: "vegetable" }, // Garlic
-            { recipeId: recipe3.id, ingredientId: ingredients[10].id, category_type: "vegetable" }, // Tomato
-            { recipeId: recipe3.id, ingredientId: ingredients[12].id, category_type: "seasoning" }, // Salt
+            //Omelette ingredients
+            //Eggs, Butter, Garlic, Tomato, Salt
+            { recipeId: recipe3.id, ingredientId: ingredients[4].id, category_type: "dairy" }, 
+            { recipeId: recipe3.id, ingredientId: ingredients[6].id, category_type: "dairy" }, 
+            { recipeId: recipe3.id, ingredientId: ingredients[9].id, category_type: "vegetable" }, 
+            { recipeId: recipe3.id, ingredientId: ingredients[10].id, category_type: "vegetable" }, 
+            { recipeId: recipe3.id, ingredientId: ingredients[12].id, category_type: "seasoning" }, 
 
-            //Pasta Carbonara ingredients
-            { recipeId: recipe4.id, ingredientId: ingredients[7].id, category_type: "protein" }, // Cheese
-            { recipeId: recipe4.id, ingredientId: ingredients[4].id, category_type: "wet" }, // Eggs
-            { recipeId: recipe4.id, ingredientId: ingredients[12].id, category_type: "seasoning" }, // Salt
-            { recipeId: recipe4.id, ingredientId: ingredients[13].id, category_type: "seasoning" }, // Black Pepper
+            //Pasta ingredients
+            //Cheese, Eggs, Salt, Black Pepper
+            { recipeId: recipe4.id, ingredientId: ingredients[7].id, category_type: "protein" }, 
+            { recipeId: recipe4.id, ingredientId: ingredients[4].id, category_type: "dairy" },
+            { recipeId: recipe4.id, ingredientId: ingredients[12].id, category_type: "seasoning" }, 
+            { recipeId: recipe4.id, ingredientId: ingredients[13].id, category_type: "seasoning" }, 
 
             //Tomato Garlic Pasta ingredients
-            { recipeId: recipe5.id, ingredientId: ingredients[8].id, category_type: "oil" }, // Olive Oil
-            { recipeId: recipe5.id, ingredientId: ingredients[9].id, category_type: "vegetable" }, // Garlic
-            { recipeId: recipe5.id, ingredientId: ingredients[10].id, category_type: "vegetable" }, // Tomato
-            { recipeId: recipe5.id, ingredientId: ingredients[12].id, category_type: "seasoning" }, // Salt
-            { recipeId: recipe5.id, ingredientId: ingredients[13].id, category_type: "seasoning" }, // Black Pepper
+            //Olive Oil, Garlic, Tomato, Salt, Black Pepper
+            { recipeId: recipe5.id, ingredientId: ingredients[8].id, category_type: "oil" }, 
+            { recipeId: recipe5.id, ingredientId: ingredients[9].id, category_type: "vegetable" }, 
+            { recipeId: recipe5.id, ingredientId: ingredients[10].id, category_type: "vegetable" }, 
+            { recipeId: recipe5.id, ingredientId: ingredients[12].id, category_type: "seasoning" }, 
+            { recipeId: recipe5.id, ingredientId: ingredients[13].id, category_type: "seasoning" }, 
         ],
     });
     console.log(`Recipe ingredients linked`);
 
-    //COOKBOOKS - User-specific cookbooks with recipes
+    //User specific cookbooks with recipes
     console.log("\nCreating cookbooks...");
 
     const cookbook1 = await prisma.cookbook.create({
         data: {
-            name: "Breakfast Favorites",
+            name: "Breakfast Dishes",
             userId: regularUser.id,
         },
     });
 
     const cookbook2 = await prisma.cookbook.create({
         data: {
-            name: "Desserts & Treats",
+            name: "Desserts & Sweet Treats",
             userId: regularUser.id,
         },
     });
@@ -194,45 +200,33 @@ async function main() {
         },
     });
 
-    console.log(`3 cookbooks created`);
+    console.log(`3 cookbooks have been created`);
 
-    //COOKBOOK RECIPES - Link cookbooks with recipes
+    //Links cookbooks with recipes
     console.log("\nAdding recipes to cookbooks...");
 
     await prisma.cookbookRecipe.createMany({
         data: [
-            //Breakfast Favorites (regularUser)
-            { cookbookId: cookbook1.id, recipeId: recipe1.id }, // Pancakes
-            { cookbookId: cookbook1.id, recipeId: recipe3.id }, // Omelette
+            //Breakfast Dishes (user)
+            //Pancakes and Omelette
+            { cookbookId: cookbook1.id, recipeId: recipe1.id }, 
+            { cookbookId: cookbook1.id, recipeId: recipe3.id }, 
 
-            //Desserts & Treats (regularUser)
-            { cookbookId: cookbook2.id, recipeId: recipe2.id }, // Chocolate Cake
+            //Desserts & Sweet Treats (user)
+            //Cake only
+            { cookbookId: cookbook2.id, recipeId: recipe2.id }, 
 
             //Quick Dinner Ideas (admin)
-            { cookbookId: cookbook3.id, recipeId: recipe4.id }, // Carbonara
-            { cookbookId: cookbook3.id, recipeId: recipe5.id }, // Tomato Pasta
+            //Carbonara and Tomato Garlic Pasta
+            { cookbookId: cookbook3.id, recipeId: recipe4.id }, 
+            { cookbookId: cookbook3.id, recipeId: recipe5.id }, 
         ],
     });
+
     console.log(`Recipes added to cookbooks!`);
 
-    /*
-    //Test for Summary:
-    console.log("\n" + "=".repeat(50));
     console.log("Database seeding completed successfully!");
-    console.log("=".repeat(50));
-    console.log("\nTest Credentials:");
-    console.log(`   Admin:  admin@example.com / admin123`);
-    console.log(`   User:   user@example.com / user123`);
-    console.log("\nData Summary:");
-    console.log(`   • 2 users (1 admin, 1 regular)`);
-    console.log(`   • 14 ingredients across 5 categories`);
-    console.log(`   • 5 recipes (3 by regular user, 2 by admin)`);
-    console.log(`   • 3 cookbooks with recipes`);
-    console.log("\nOwnership-based Authorization Test:");
-    console.log(`   • User recipes: Pancakes, Chocolate Cake, Vegetable Omelette`);
-    console.log(`   • Admin recipes: Pasta Carbonara, Tomato Garlic Pasta`);
-    console.log("=".repeat(50)); 
-    */
+
 }
 
 main()

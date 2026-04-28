@@ -14,7 +14,6 @@ export async function getCookbookById(req, res) {
         const id = parseInt(req.params.id);
         const cookbook = await cookbookService.getCookbookById(id);
         
-        // Check authorization
         if (cookbook.user_id !== req.user.id && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'You cannot access this cook book.' });
         }
@@ -49,7 +48,6 @@ export async function updateCookbook(req, res) {
         const id = parseInt(req.params.id);
         const cookbook = await cookbookService.getCookbookById(id);
         
-        // Check authorization
         if (cookbook.user_id !== req.user.id && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'You cannot edit this cook book.' });
         }
@@ -76,7 +74,6 @@ export async function deleteCookbook(req, res) {
         const id = parseInt(req.params.id);
         const cookbook = await cookbookService.getCookbookById(id);
         
-        // Check authorization
         if (cookbook.user_id !== req.user.id && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'You cannot delete this cook book.' });
         }

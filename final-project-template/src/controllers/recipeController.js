@@ -43,7 +43,6 @@ export async function updateRecipe(req, res) {
         const id = parseInt(req.params.id);
         const recipe = await recipeService.getRecipeById(id);
         
-        // Check authorization
         if (recipe.user_id !== req.user.id && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'You cannot edit this recipe.' });
         }
@@ -70,7 +69,6 @@ export async function deleteRecipe(req, res) {
         const id = parseInt(req.params.id);
         const recipe = await recipeService.getRecipeById(id);
         
-        // Check authorization
         if (recipe.user_id !== req.user.id && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'You cannot delete this recipe.' });
         }

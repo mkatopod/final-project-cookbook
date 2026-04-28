@@ -2,6 +2,7 @@ services:
   - type: web
     name: final-project
     runtime: node
+    rootDir: final-project-template
     plan: free
     buildCommand: npm install && npx prisma migrate deploy && npx prisma db seed
     startCommand: npm run dev
