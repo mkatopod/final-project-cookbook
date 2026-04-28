@@ -9,6 +9,17 @@ const prisma = new PrismaClient();
 async function main() {
     console.log("Starting the database seed...");
 
+    //Truncate tables only if they are in in development
+    if (process.env.NODE_ENV !== 'production') {
+        console.log("Truncating tables (development mode)...");
+        await prisma.cookbookRecipe.deleteMany({});
+        await prisma.recipeIngredient.deleteMany({});
+        await prisma.recipe.deleteMany({});
+        await prisma.cookbook.deleteMany({});
+        await prisma.ingredient.deleteMany({});
+        await prisma.user.deleteMany({});
+    }
+
     //Create two users: one ADMIN and one regular USER
     console.log("\nCreating users...");
 
