@@ -9,7 +9,7 @@ export async function signUp({ email, password, role = 'user' }) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await userRepo.createUser({ email, hashedPassword, role });
+    const user = await userRepo.createUser({ email, password: hashedPassword, role });
     return user;
 }
 
@@ -25,13 +25,13 @@ export async function logIn({ email, password }) {
     }
 
     const token = jwt.sign({ 
-        userId: user.user_id, role: user.role }, 
+        userId: user.id, role: user.role }, 
         process.env.JWT_SECRET, 
         { expiresIn: process.env.JWT_EXPIRES_IN }
     );
     
     return { 
         token, 
-        user: { user_id: user.user_id, email: user.email, role: user.role } 
+        user: { id: user.id, email: user.email, role: user.role } 
     };
 }

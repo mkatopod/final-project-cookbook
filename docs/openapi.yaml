@@ -42,7 +42,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
               example:
-                user_id: 5
+                id: 5
                 email: aadams@email.com
                 role: user
         '400':
@@ -81,7 +81,7 @@ paths:
               example:
                 token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
                 user:
-                  user_id: 5
+                  id: 5
                   email: aadams@email.com
                   role: user
         '400':
@@ -277,11 +277,9 @@ paths:
                 - id: 1
                   title: My Cookbook
                   description: My personal recipe collection
-                  user_id: 1
                 - id: 2
                   title: Italian Recipes
                   description: Traditional Italian dishes
-                  user_id: 1
         '401':
           description: Authentication required
 
@@ -311,7 +309,6 @@ paths:
                 id: 1
                 title: My Cookbook
                 description: My personal recipe collection
-                user_id: 1
         '400':
           description: Invalid cookbook data
         '401':
@@ -342,7 +339,6 @@ paths:
                 id: 1
                 title: My Cookbook
                 description: My personal recipe collection
-                user_id: 1
         '401':
           description: Authentication required
         '403':
@@ -383,7 +379,6 @@ paths:
                 id: 1
                 title: Updated Cookbook
                 description: Updated description
-                user_id: 1
         '400':
           description: Invalid cookbook data
         '401':
@@ -594,7 +589,7 @@ components:
     User:
       type: object
       properties:
-        user_id:
+        id:
           type: integer
           description: Unique user identifier
         email:
@@ -606,7 +601,7 @@ components:
           enum: [user, admin]
           description: User role
       required:
-        - user_id
+        - id
         - email
         - role
 
@@ -693,13 +688,12 @@ components:
         description:
           type: string
           description: Cookbook description
-        user_id:
-          type: integer
-          description: ID of the cookbook owner
+        #id:
+          #type: integer
+          #description: ID of the cookbook owner
       required:
         - id
         - title
-        - user_id
 
     NewCookbook:
       type: object

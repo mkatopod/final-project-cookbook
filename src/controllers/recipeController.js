@@ -28,7 +28,7 @@ export async function getRecipeById(req, res) {
 export async function createRecipe(req, res) {
     try {
         const { title, instructions } = req.body;
-        const newRecipe = await recipeService.createRecipe({ title, instructions, user_id: req.user.id });
+        const newRecipe = await recipeService.createRecipe({ title, instructions, id: req.user.id });
         res.status(201).json(newRecipe);
     } catch (err) {
         if (err.code === 'INVALID_RECIPE_DATA') {
@@ -43,7 +43,7 @@ export async function updateRecipe(req, res) {
         const id = parseInt(req.params.id);
         const recipe = await recipeService.getRecipeById(id);
         
-        if (recipe.user_id !== req.user.id && req.user.role !== 'admin') {
+        if (recipe.id !== req.user.id && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'You cannot edit this recipe.' });
         }
         
@@ -69,7 +69,7 @@ export async function deleteRecipe(req, res) {
         const id = parseInt(req.params.id);
         const recipe = await recipeService.getRecipeById(id);
         
-        if (recipe.user_id !== req.user.id && req.user.role !== 'admin') {
+        if (recipe.id !== req.user.id && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'You cannot delete this recipe.' });
         }
         

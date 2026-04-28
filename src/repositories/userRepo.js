@@ -8,6 +8,6 @@ export async function findUserByEmail(email) {
 export async function createUser(data) {
     return await prisma.user.create({ 
         data,
-        select: { user_id: true, email: true, role: true }
+        select: { id: true, email: true, role: true }
     });
 }
