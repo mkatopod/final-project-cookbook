@@ -2,9 +2,10 @@ services:
   - type: web
     name: final-project
     runtime: node
-    rootDir: final-project-template
     plan: free
     buildCommand: npm install && npx prisma migrate deploy && npx prisma generate && npm run seed:prod
     startCommand: npm run start
     envVars:
       - key: DATABASE_URL
+
+ 
