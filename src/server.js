@@ -15,6 +15,8 @@ import swaggerUi from 'swagger-ui-express';
 import ymal from 'js-yaml';
 import fs from 'fs';
 
+const app = express();
+
 let specs;
 try {
   specs = ymal.load(fs.readFileSync('./docs/openapi.yaml', 'utf8'));
@@ -24,9 +26,6 @@ try {
 }
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
-
-const app = express();
-
 app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/ingredients', ingredientRoutes);
