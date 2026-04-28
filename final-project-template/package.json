@@ -19,9 +19,11 @@
     "eslint": "^9.29.0",
     "eslint-config-prettier": "^10.1.5",
     "globals": "^16.2.0",
-    "prettier": "^3.6.1"
+    "prettier": "^3.6.1",
+    "prisma": "^5.8.0"
   },
   "dependencies": {
+    "@prisma/client": "^5.8.0",
     "bcrypt": "^6.0.0",
     "jsonwebtoken": "^9.0.3"
   }

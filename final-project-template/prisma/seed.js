@@ -73,12 +73,12 @@ async function main() {
     const recipe1 = await prisma.recipe.create({
         data: {
             title: "Classic Pancakes",
-            instructions: JSON.stringify([
+            instructions: [
                 "Mix flour, sugar, and baking powder",
                 "Add eggs and milk",
                 "Cook on griddle until golden brown",
                 "Serve with butter and syrup"
-            ]),
+            ],
             authorId: regularUser.id,
         },
     });
@@ -86,12 +86,12 @@ async function main() {
     const recipe2 = await prisma.recipe.create({
         data: {
             title: "Chocolate Cake",
-            instructions: JSON.stringify([
+            instructions: [
                 "Mix flour, sugar, and cocoa powder",
                 "Add eggs, milk, and vanilla extract",
                 "Bake at 350°F for 30 minutes",
                 "Cool and decorate as desired"
-            ]),
+            ],
             authorId: regularUser.id,
         },
     });
@@ -99,12 +99,12 @@ async function main() {
     const recipe3 = await prisma.recipe.create({
         data: {
             title: "Vegetable Omelette",
-            instructions: JSON.stringify([
+            instructions: [
                 "Beat 3 eggs with salt and pepper",
                 "Heat butter in pan",
                 "Pour eggs and add vegetables",
                 "Cook until set and fold in half"
-            ]),
+            ],
             authorId: regularUser.id,
         },
     });
@@ -113,13 +113,13 @@ async function main() {
     const recipe4 = await prisma.recipe.create({
         data: {
             title: "Pasta Carbonara",
-            instructions: JSON.stringify([
+            instructions: [
                 "Cook pasta until al dente",
                 "Fry bacon until crispy",
                 "Mix eggs with cheese",
                 "Combine pasta with bacon and egg mixture",
                 "Serve immediately"
-            ]),
+            ],
             authorId: admin.id,
         },
     });
@@ -127,13 +127,13 @@ async function main() {
     const recipe5 = await prisma.recipe.create({
         data: {
             title: "Tomato Garlic Pasta",
-            instructions: JSON.stringify([
+            instructions: [
                 "Heat olive oil in pan",
                 "Sauté garlic and tomatoes",
                 "Add salt and pepper to taste",
                 "Simmer for 15 minutes",
                 "Toss with cooked pasta"
-            ]),
+            ],
             authorId: admin.id,
         },
     });
