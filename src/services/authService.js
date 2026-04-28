@@ -13,7 +13,7 @@ export async function signUp({ email, password, role = 'user' }) {
     return user;
 }
 
-export async function logIn(email, password) {
+export async function logIn({ email, password }) {
     const user = await userRepo.findUserByEmail(email);
     if (!user) {
         throw { code: 'INVALID_CREDENTIALS' };
