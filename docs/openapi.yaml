@@ -7,7 +7,7 @@ servers:
   - url: http://localhost:3000
     description: Local development server for testing and development
   - url: https://final-project-cookbook-1.onrender.com
-    description: Main production server on Render
+    description: Main production server on Render 
 tags:
   - name: Authentication
     description: User authentication endpoints
