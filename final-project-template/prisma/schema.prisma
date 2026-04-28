@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+//Added models and relations for users, recipes, ingredients, 
+//cookbooks, and their join tables. Also added enum for user roles.
+model User {
+  id        Int      @id @default(autoincrement()) @map("user_id")
+  email     String   @unique
+  password  String
+  role     String   @default("USER")
+  recipes   Recipe[]
+  cookbooks Cookbook[]
+
+  @@map("users")
+}
+
+model Recipe {
+  id          Int      @id @default(autoincrement()) @map("recipe_id")
+  title       String
+  instructions String[]
+
+  authorId      Int
+  author        User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  ingredients RecipeIngredient[]
+  cookbooks  CookbookRecipe[]
+
+  @@map("recipes")
+}
+
+model Ingredient {
+  id       Int      @id @default(autoincrement()) @map("ingredient_id")
+  name     String   @unique
+  category String
+
+  recipes  RecipeIngredient[]
+
+  @@map("ingredients")
+}
+
+model RecipeIngredient {
+  id      Int      @id @default(autoincrement()) @map("recipe_ingredient_id")
+  recipeId  Int @map("recipe_id")
+  ingredientId  Int @map("ingredient_id")
+
+  category_type String
+
+  recipe        Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  ingredient    Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+
+  @@map("recipe_ingredients")
+}
+
+model Cookbook {
+  id      Int      @id @default(autoincrement()) @map("cookbook_id")
+  name    String
+  date DateTime @default(now())
+
+  userId  Int @map("user_id")
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  recipes CookbookRecipe[]
+
+  @@map("cookbooks")
+}
+
+model CookbookRecipe {
+  id      Int      @id @default(autoincrement()) @map("cookbook_recipe_id")
+  cookbookId  Int @map("cookbook_id")
+  recipeId  Int @map("recipe_id")
+
+  cookbook    Cookbook   @relation(fields: [cookbookId], references: [id], onDelete: Cascade)
+  recipe      Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@map("cookbook_recipes")
+}
+
+enum Role {
+  USER
+  ADMIN
+}

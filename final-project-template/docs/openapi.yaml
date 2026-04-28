@@ -1,0 +1,737 @@
+openapi: 3.1.0
+info:
+  title: Cookbook API
+  version: 1.0.0
+  description: A RESTful API for managing recipes, cookbooks, and ingredients with JWT authentication
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+  - url: https://my-cookbook-api-service.onrender.com
+    description: Production server
+tags:
+  - name: Authentication
+    description: User authentication endpoints
+  - name: Recipes
+    description: Recipe management endpoints
+  - name: Cookbooks
+    description: Cookbook management endpoints
+  - name: Ingredients
+    description: Ingredient management endpoints
+
+paths:
+  /api/auth/signup:
+    post:
+      summary: Register a new user
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupRequest'
+            example:
+              email: user@example.com
+              password: securePassword123
+              role: user
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                user_id: 5
+                email: aadams@email.com
+                role: user
+        '400':
+          description: Email and password are required
+        '409':
+          description: Email already in use
+
+  /api/auth/login:
+    post:
+      summary: Login user and get JWT token
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            example:
+              email: user@example.com
+              password: securePassword123
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+              example:
+                token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                user:
+                  user_id: 5
+                  email: aadams@email.com
+                  role: user
+        '400':
+          description: Email and password are required
+        '401':
+          description: Invalid email or password
+
+  /api/recipes:
+    get:
+      summary: Get all recipes
+      tags:
+        - Recipes
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: A list of recipes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+              example:
+                - recipe_id: 5
+                  title: Simple Tomato Pasta
+                  instructions: Boil pasta in a pot for ten minutes. Add green peppers, onion, tomatoes and saute in a pan for fifteen minutes. Drain pasta and transfer over to sauce. Saute for another five minutes.
+                - recipe_id: 7
+                  title: Garlic Bread
+                  instructions: Preheat the oven to 400. Take bread and add garlic spread of onion, garlic, butter, olive oil, spices. Spread out on pan and bake in over for seven minutes.
+        '401':
+          description: Authentication required
+
+    post:
+      summary: Create a new recipe
+      tags:
+        - Recipes
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewRecipe'
+            example:
+              title: Simple Tomato Pasta
+              instructions: Boil pasta in a pot for ten minutes. Add green peppers, onion, tomatoes and saute in a pan for fifteen minutes. Drain pasta and transfer over to sauce. Saute for another five minutes.
+      responses:
+        '201':
+          description: Recipe created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+              example:
+                recipe_id: 5
+                title: Simple Tomato Pasta
+                instructions: Boil pasta in a pot for ten minutes. Add green peppers, onion, tomatoes and saute in a pan for fifteen minutes. Drain pasta and transfer over to sauce. Saute for another five minutes.
+        '400':
+          description: Bad Request - Title and instructions are required
+        '401':
+          description: Authentication required
+
+  /api/recipes/{id}:
+    get:
+      summary: Get a recipe by ID
+      tags:
+        - Recipes
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 5
+      responses:
+        '200':
+          description: A single recipe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+              example:
+                recipe_id: 5
+                title: Simple Tomato Pasta
+                instructions: Boil pasta in a pot for ten minutes. Add green peppers, onion, tomatoes and saute in a pan for fifteen minutes. Drain pasta and transfer over to sauce. Saute for another five minutes.
+        '400':
+          description: Bad Request - Recipe ID must be a positive integer
+        '401':
+          description: Authentication required
+        '404':
+          description: Recipe not found
+
+    put:
+      summary: Update a recipe (owner or admin only)
+      tags:
+        - Recipes
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 5
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewRecipe'
+            example:
+              title: Simple Tomato Pasta Updated
+              instructions: Updated cooking instructions
+      responses:
+        '200':
+          description: Recipe updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+              example:
+                recipe_id: 5
+                title: Simple Tomato Pasta Updated
+                instructions: Updated cooking instructions
+        '400':
+          description: Bad Request - Title must be provided
+        '401':
+          description: Authentication required
+        '403':
+          description: Forbidden - You cannot edit this recipe
+        '404':
+          description: Recipe not found
+
+    delete:
+      summary: Delete a recipe (owner or admin only)
+      tags:
+        - Recipes
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 5
+      responses:
+        '200':
+          description: Recipe deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  recipe_id:
+                    type: integer
+                  message:
+                    type: string
+              example:
+                recipe_id: 5
+                message: Recipe has been deleted.
+        '400':
+          description: Bad Request - Recipe ID must be a positive integer
+        '401':
+          description: Authentication required
+        '403':
+          description: Forbidden - You cannot delete this recipe
+        '404':
+          description: Recipe not found
+
+  /api/cookbooks:
+    get:
+      summary: Get all cookbooks
+      tags:
+        - Cookbooks
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: A list of cookbooks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cookbook'
+              example:
+                - id: 1
+                  title: My Cookbook
+                  description: My personal recipe collection
+                  user_id: 1
+                - id: 2
+                  title: Italian Recipes
+                  description: Traditional Italian dishes
+                  user_id: 1
+        '401':
+          description: Authentication required
+
+    post:
+      summary: Create a new cookbook
+      tags:
+        - Cookbooks
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewCookbook'
+            example:
+              title: My Cookbook
+              description: My personal recipe collection
+      responses:
+        '201':
+          description: Cookbook created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cookbook'
+              example:
+                id: 1
+                title: My Cookbook
+                description: My personal recipe collection
+                user_id: 1
+        '400':
+          description: Invalid cookbook data
+        '401':
+          description: Authentication required
+
+  /api/cookbooks/{id}:
+    get:
+      summary: Get a cookbook by ID (owner or admin only)
+      tags:
+        - Cookbooks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: A single cookbook
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cookbook'
+              example:
+                id: 1
+                title: My Cookbook
+                description: My personal recipe collection
+                user_id: 1
+        '401':
+          description: Authentication required
+        '403':
+          description: Forbidden - insufficient permissions
+        '404':
+          description: Cookbook not found
+
+    put:
+      summary: Update a cookbook (owner or admin only)
+      tags:
+        - Cookbooks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewCookbook'
+            example:
+              title: Updated Cookbook
+              description: Updated description
+      responses:
+        '200':
+          description: Cookbook updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cookbook'
+              example:
+                id: 1
+                title: Updated Cookbook
+                description: Updated description
+                user_id: 1
+        '400':
+          description: Invalid cookbook data
+        '401':
+          description: Authentication required
+        '403':
+          description: Forbidden - insufficient permissions
+        '404':
+          description: Cookbook not found
+
+    delete:
+      summary: Delete a cookbook (owner or admin only)
+      tags:
+        - Cookbooks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '204':
+          description: Cookbook deleted successfully
+        '401':
+          description: Authentication required
+        '403':
+          description: Forbidden - insufficient permissions
+        '404':
+          description: Cookbook not found
+
+  /api/ingredients:
+    get:
+      summary: Get all ingredients
+      tags:
+        - Ingredients
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: A list of ingredients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ingredient'
+              example:
+                - ingredient_id: 10
+                  name: Green Pepper
+                  category: vegetable
+                - ingredient_id: 11
+                  name: Onion
+                  category: vegetable
+        '401':
+          description: Authentication required
+
+    post:
+      summary: Create a new ingredient
+      tags:
+        - Ingredients
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewIngredient'
+            example:
+              name: Green Pepper
+              category: vegetable
+      responses:
+        '201':
+          description: Ingredient created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ingredient'
+              example:
+                ingredient_id: 10
+                name: Green Pepper
+                category: vegetable
+        '400':
+          description: Bad Request - One of the fields is missing and need to be filled out
+        '401':
+          description: Authentication required
+        '409':
+          description: Conflict - Ingredient already exists
+
+  /api/ingredients/{id}:
+    get:
+      summary: Get an ingredient by ID
+      tags:
+        - Ingredients
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 10
+      responses:
+        '200':
+          description: A single ingredient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ingredient'
+              example:
+                ingredient_id: 10
+                name: Green Pepper
+                category: vegetable
+        '400':
+          description: Bad Request - Ingredient ID must be a positive integer
+        '401':
+          description: Authentication required
+        '404':
+          description: Ingredient not found
+
+    put:
+      summary: Update an ingredient
+      tags:
+        - Ingredients
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 10
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewIngredient'
+            example:
+              name: Green Pepper
+              category: vegetable
+      responses:
+        '200':
+          description: Ingredient updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ingredient'
+              example:
+                ingredient_id: 10
+                name: Green Pepper
+                category: vegetable
+        '400':
+          description: Bad Request - Entered input cannot be empty
+        '401':
+          description: Authentication required
+        '404':
+          description: Ingredient not found
+
+    delete:
+      summary: Delete an ingredient
+      tags:
+        - Ingredients
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 10
+      responses:
+        '200':
+          description: Ingredient deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ingredient_id:
+                    type: integer
+                  message:
+                    type: string
+              example:
+                ingredient_id: 10
+                message: The ingredient has been deleted.
+        '400':
+          description: Bad Request - Ingredient ID must be a positive integer
+        '401':
+          description: Authentication required
+        '404':
+          description: Ingredient not found
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from /api/auth/login. Use this token in the Authorization header as "Bearer <token>"
+
+  schemas:
+    User:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: Unique user identifier
+        email:
+          type: string
+          format: email
+          description: User email address
+        role:
+          type: string
+          enum: [user, admin]
+          description: User role
+      required:
+        - user_id
+        - email
+        - role
+
+    SignupRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: User email address
+        password:
+          type: string
+          description: User password (will be hashed)
+        role:
+          type: string
+          enum: [user, admin]
+          description: User role (optional, defaults to 'user')
+      required:
+        - email
+        - password
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: User email address
+        password:
+          type: string
+          description: User password
+      required:
+        - email
+        - password
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: JWT token to be used in Authorization header
+        user:
+          $ref: '#/components/schemas/User'
+
+    Recipe:
+      type: object
+      properties:
+        recipe_id:
+          type: integer
+          description: Unique recipe identifier
+        title:
+          type: string
+          description: Recipe title
+        instructions:
+          type: string
+          description: Recipe cooking instructions
+      required:
+        - recipe_id
+        - title
+        - instructions
+
+    NewRecipe:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Recipe title
+        instructions:
+          type: string
+          description: Recipe cooking instructions
+      required:
+        - title
+        - instructions
+
+    Cookbook:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique cookbook identifier
+        title:
+          type: string
+          description: Cookbook title
+        description:
+          type: string
+          description: Cookbook description
+        user_id:
+          type: integer
+          description: ID of the cookbook owner
+      required:
+        - id
+        - title
+        - user_id
+
+    NewCookbook:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Cookbook title
+        description:
+          type: string
+          description: Cookbook description
+      required:
+        - title
+
+    Ingredient:
+      type: object
+      properties:
+        ingredient_id:
+          type: integer
+          description: Unique ingredient identifier
+        name:
+          type: string
+          description: Ingredient name
+        category:
+          type: string
+          description: Ingredient category
+      required:
+        - ingredient_id
+        - name
+        - category
+
+    NewIngredient:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Ingredient name
+        category:
+          type: string
+          description: Ingredient category
+      required:
+        - name
+        - category
