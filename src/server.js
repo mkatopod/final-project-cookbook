@@ -11,6 +11,19 @@ import authRoutes from './routes/authRoutes.js';
 import ingredientRoutes from './routes/ingredientRoutes.js';
 import recipeRoutes from './routes/recipeRoutes.js';
 import cookbookRoutes from './routes/cookbookRoutes.js';
+import swaggerUi from 'swagger-ui-express';
+import ymal from 'js-yaml';
+import fs from 'fs';
+
+let specs;
+try {
+  specs = ymal.load(fs.readFileSync('./docs/openapi.yaml', 'utf8'));
+} catch (error) {
+  console.error('Failed to load OpenAPI specification', error);
+  process.exit(1);
+}
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 const app = express();
 
