@@ -1,3 +1,11 @@
+//How to upload to github:
+//git init
+//git add .
+//git commit -m "Initial commit"
+//git remote add origin https://github.com/username-here/repo-name-here.git
+//git branch -M main
+//git push -u origin main
+
 import express from 'express';
 import authRoutes from './routes/authRoutes.js';
 import ingredientRoutes from './routes/ingredientRoutes.js';

@@ -1,5 +1,4 @@
-//Seed script to populate database with sample data for testing
-//Usage: npm run seed
+//npm run seed
 //This script creates sample users, ingredients, recipes, and cookbooks
 
 import { PrismaClient } from "@prisma/client";
