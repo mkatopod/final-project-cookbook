@@ -6,7 +6,7 @@ info:
 servers:
   - url: http://localhost:3000/api-docs/#/
     description: Local development server
-  - url: https://my-cookbook-api-service.onrender.com
+  - url: https://final-project-cookbook-1.onrender.com/
     description: Production server
 tags:
   - name: Authentication
