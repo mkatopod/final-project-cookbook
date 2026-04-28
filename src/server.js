@@ -14,6 +14,7 @@ import cookbookRoutes from './routes/cookbookRoutes.js';
 import swaggerUi from 'swagger-ui-express';
 import ymal from 'js-yaml';
 import fs from 'fs';
+import cors from 'cors';
 
 const app = express();
 
@@ -25,8 +26,8 @@ try {
   process.exit(1);
 }
 
-app.use(cors());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+app.use(cors());
 app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/ingredients', ingredientRoutes);
