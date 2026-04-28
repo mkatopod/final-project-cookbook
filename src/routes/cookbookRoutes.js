@@ -4,8 +4,7 @@ import { createCookbook, getAllCookbooks, getCookbookById, updateCookbook, delet
 
 const router = express.Router();
 
-router.post('/', createCookbook);
-//router.post('/', authenticate, createCookbook);
+router.post('/', authenticate, createCookbook);
 router.get('/', authenticate, getAllCookbooks);
 router.get('/:id', authenticate, getCookbookById);
 router.put('/:id', authenticate, updateCookbook);
