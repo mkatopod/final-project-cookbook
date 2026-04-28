@@ -7,7 +7,7 @@ servers:
   - url: http://localhost:3000/api-docs/#/
     description: Local development server for testing and development
   - url: https://final-project-cookbook-1.onrender.com/api-docs/recipes
-    description: Production server on Render
+    description: Main production server on Render
 tags:
   - name: Authentication
     description: User authentication endpoints
@@ -60,10 +60,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginRequest'
-            example:
-              email: user@example.com
-              password: securePassword123
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+                password:
+                  type: string
+                  example: securePassword123
       responses:
         '200':
           description: Login successful
