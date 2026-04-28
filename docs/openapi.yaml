@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: A RESTful API for managing recipes, cookbooks, and ingredients with JWT authentication
 servers:
-  - url: http://localhost:3000
+  - url: http://localhost:3000/api-docs/#/
     description: Local development server
   - url: https://my-cookbook-api-service.onrender.com
     description: Production server
