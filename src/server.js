@@ -25,6 +25,7 @@ try {
   process.exit(1);
 }
 
+app.use(cors());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use(express.json());
 app.use('/api/auth', authRoutes);
