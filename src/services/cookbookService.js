@@ -16,8 +16,8 @@ export async function getCookbookById(id) {
 }
 
 export async function createCookbook(data) {
-    if (!data.date || !data.name) {
-        throw { code: 'INVALID_COOKBOOK_DATA', message: 'Data and name are required.' };
+    if (!data.title || !data.description) {
+        throw { code: 'INVALID_COOKBOOK_DATA', message: 'Title and description are required.' };
     }
     return cookbookRepo.createCookbook(data);
 }
@@ -26,8 +26,8 @@ export async function updateCookbook(id, data) {
     if (!Number.isInteger(id) || id <= 0) {
         throw { code: 'INVALID_COOKBOOK_ID', message: 'Cook book ID must be a positive integer.' };
     }
-    if (!data.name && !data.date) {
-        throw { code: 'INVALID_COOKBOOK_DATA', message: 'Name cannot be empty.' };
+    if (!data.title || !data.description) {
+        throw { code: 'INVALID_COOKBOOK_DATA', message: 'Title and description cannot be empty.' };
     }
     const existing = await cookbookRepo.getCookbookById(id);
     if (!existing) {
