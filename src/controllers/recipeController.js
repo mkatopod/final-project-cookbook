@@ -3,8 +3,10 @@ import * as recipeService from '../services/recipeService.js';
 export async function getAllRecipes(req, res) {
     try {
         const recipes = await recipeService.getAllRecipes();
+        console.log('Fetched recipes:', recipes);
         res.status(200).json(recipes);
     } catch (err) {
+        console.error('Error fetching recipes:', err);
         res.status(500).json({ message: 'Internal server error' });
     }
 }
@@ -28,7 +30,7 @@ export async function getRecipeById(req, res) {
 export async function createRecipe(req, res) {
     try {
         const { title, instructions } = req.body;
-        const newRecipe = await recipeService.createRecipe({ title, instructions, user_id: req.user.id });
+        const newRecipe = await recipeService.createRecipe({ title, instructions, authorId: req.user.id });
         res.status(201).json(newRecipe);
     } catch (err) {
         if (err.code === 'INVALID_RECIPE_DATA') {
