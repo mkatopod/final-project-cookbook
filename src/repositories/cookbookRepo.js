@@ -5,7 +5,7 @@ export async function getAllCookbooks() {
     return await prisma.cookbook.findMany({
         select: {
             cookbook_id: true,
-            id: true,
+            user_id: true,
             date: true,
             name: true
         }
@@ -17,7 +17,7 @@ export async function getCookbookById(id) {
         where: { cookbook_id: id },
         select: {
             cookbook_id: true,
-            id: true,
+            user_id: true,
             date: true,
             name: true
         }
@@ -29,7 +29,7 @@ export async function createCookbook(data) {
         data,
         select: {
             cookbook_id: true,
-            id: true,
+            user_id: true,
             date: true,
             name: true
         }
@@ -42,7 +42,7 @@ export async function updateCookbook(id, data) {
         data,
         select: {
             cookbook_id: true,
-            id: true,
+            user_id: true,
             date: true,
             name: true
         }

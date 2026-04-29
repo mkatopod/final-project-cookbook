@@ -14,7 +14,7 @@ datasource db {
 //Added models and relations for users, recipes, ingredients, 
 //cookbooks, and their join tables. Also added enum for user roles.
 model User {
-  id        Int      @id @default(autoincrement()) @map("id")
+  id        Int      @id @default(autoincrement()) @map("user_id")
   email     String   @unique
   password  String
   role     String   @default("USER")
@@ -66,7 +66,7 @@ model Cookbook {
   name    String
   date DateTime @default(now())
 
-  userId  Int @map("id")
+  userId  Int @map("user_id")
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   recipes CookbookRecipe[]

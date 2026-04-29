@@ -9,7 +9,7 @@ const router = express.Router();
 router.post('/', authenticate, createRecipe);
 router.get('/', authenticate, authorizeRoles('user', 'admin'), getAllRecipes);
 router.get('/:id', authenticate, getRecipeById);
-router.put('/:id', authenticate, authorizeOwnerOrAdmin('id'), updateRecipe);
-router.delete('/:id', authenticate, authorizeOwnerOrAdmin('id'), deleteRecipe);
+router.put('/:id', authenticate, authorizeOwnerOrAdmin('user_id'), updateRecipe);
+router.delete('/:id', authenticate, authorizeOwnerOrAdmin('user_id'), deleteRecipe);
 
 export default router;

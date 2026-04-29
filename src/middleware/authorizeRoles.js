@@ -13,7 +13,7 @@ export function authorizeRoles(...allowedRoles) {
     };
 }
 
-export function authorizeOwnerOrAdmin(resourceUserIdField = 'id') {
+export function authorizeOwnerOrAdmin(resourceUserIdField = 'user_id') {
     return (req, res, next) => {
         if (!req.user) {
             return res.status(401).json({ message: 'Not authenticated' });

@@ -14,7 +14,7 @@ export async function getCookbookById(req, res) {
         const id = parseInt(req.params.id);
         const cookbook = await cookbookService.getCookbookById(id);
         
-        if (cookbook.id !== req.user.id && req.user.role !== 'admin') {
+        if (cookbook.user_id !== req.user.id && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'You cannot access this cook book.' });
         }
         
@@ -33,7 +33,7 @@ export async function getCookbookById(req, res) {
 export async function createCookbook(req, res) {
     try {
         const { name, date } = req.body;
-        const newCookbook = await cookbookService.createCookbook({ name, date, id: req.user.id });
+        const newCookbook = await cookbookService.createCookbook({ name, date, user_id: req.user.id });
         res.status(201).json(newCookbook);
     } catch (err) {
         if (err.code === 'INVALID_COOKBOOK_DATA') {
@@ -48,7 +48,7 @@ export async function updateCookbook(req, res) {
         const id = parseInt(req.params.id);
         const cookbook = await cookbookService.getCookbookById(id);
         
-        if (cookbook.id !== req.user.id && req.user.role !== 'admin') {
+        if (cookbook.user_id !== req.user.id && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'You cannot edit this cook book.' });
         }
         
