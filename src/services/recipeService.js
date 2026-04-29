@@ -1,4 +1,7 @@
 import * as recipeRepo from '../repositories/recipeRepo.js';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export async function getAllRecipes() {
     return await recipeRepo.getAllRecipes();
