@@ -15,7 +15,7 @@ CREATE TABLE "users" (
 CREATE TABLE "recipes" (
     "recipe_id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
-    "instructions" TEXT[],
+    "instructions" TEXT NOT NULL,
     "authorId" INTEGER NOT NULL,
 
     CONSTRAINT "recipes_pkey" PRIMARY KEY ("recipe_id")
